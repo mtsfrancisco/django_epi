@@ -3,7 +3,6 @@ import numpy as np
 from django.conf import settings
 from ultralytics import YOLO
 
-
 yolo = YOLO('yolo_model/best.pt')
 
 def getColours(cls_num):
@@ -47,22 +46,4 @@ class VideoCamera(object):
 					cv2.putText(image, f'{classes_names[int(box.cls[0])]} {box.conf[0]:.2f}', (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 1, colour, 2)
 
 		ret, jpeg = cv2.imencode('.jpg', image)
-		return jpeg.tobytes()
-
-
-class IPWebCam(object):
-	def __init__(self):
-		self.url = "http://192.168.0.100:8080/shot.jpg"
-
-
-	def __del__(self):
-		cv2.destroyAllWindows()
-
-	def get_frame(self):
-		imgResp = urllib.request.urlopen(self.url)
-		imgNp = np.array(bytearray(imgResp.read()),dtype=np.uint8)
-		img= cv2.imdecode(imgNp,-1)
-		resize = cv2.resize(img, (640, 480), interpolation = cv2.INTER_LINEAR) 
-		frame_flip = cv2.flip(resize,1)
-		ret, jpeg = cv2.imencode('.jpg', frame_flip)
 		return jpeg.tobytes()
